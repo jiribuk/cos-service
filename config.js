@@ -1,4 +1,6 @@
 module.exports = {
+  NODE_ENV: process.env.NODE_ENV,
+  LOGGLY_ACCESS_TOKEN: process.enb.LOGGLY_ACCESS_TOKEN,
   COS_AUTH_URL: process.env.COS_AUTH_URL,
   COS_PROJECT_ID: process.env.COS_PROJECT_ID,
   COS_DOMAIN_ID: process.env.COS_DOMAIN_ID,
