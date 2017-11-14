@@ -1,0 +1,74 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: angular-server
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: angular-server
+        tier: server
+    spec:
+      containers:
+      - name: angular-server 
+        image: registry.ng.bluemix.net/jiri/angular-server:latest 
+        imagePullPolicy: Always        
+        ports:
+        - name: angular-server
+          containerPort: 3000
+        env:
+          - name: NODE_ENV
+            valueFrom:
+              configMapKeyRef:
+                name: jinni-api-config
+                key: NODE_ENV
+          - name: ALCHEMY_API_KEY
+            valueFrom:
+              configMapKeyRef:
+                name: jinni-api-config
+                key: ALCHEMY_API_KEY
+          - name: ELASTICSEARCH_INDEX
+            valueFrom:
+              configMapKeyRef:
+                name: jinni-api-config
+                key: ELASTICSEARCH_INDEX
+          - name: ELASTICSEARCH_URL
+            valueFrom:
+              configMapKeyRef:
+                name: jinni-api-config
+                key: ELASTICSEARCH_URL                
+          - name: LOGGLY_ACCESS_TOKEN
+            valueFrom:
+              configMapKeyRef:
+                name: jinni-api-config
+                key: LOGGLY_ACCESS_TOKEN
+          - name: MONGODB_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: jinni-api-config
+                key: MONGODB_PASSWORD
+          - name: MONGODB_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                name: jinni-api-config
+                key: MONGODB_USERNAME
+          - name: MONGODB_URL
+            valueFrom:
+              configMapKeyRef:
+                name: jinni-api-config
+                key: MONGODB_URL                              
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: angular-server-loadbalancer-service 
+spec:
+  selector:
+    app: angular-server 
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: angular-server 
+  type: LoadBalancer
+
