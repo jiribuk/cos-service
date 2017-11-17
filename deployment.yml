@@ -57,13 +57,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: cos-service-loadbalancer-service 
+  name: cos-service-nodeport-service 
 spec:
   selector:
     app: cos-service 
   ports:
     - protocol: TCP
-      port: 80
+      port: 8081
       targetPort: cos-service 
-  type: LoadBalancer
+  type: NodePort
 
