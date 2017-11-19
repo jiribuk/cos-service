@@ -18,11 +18,10 @@ const storageConfig = {
 }
 
 // Initialize Auth Service
-let authServiceUrl = ''
-let authToken = ''
 dns.lookup(config.AUTH_SERVICE_DNS, (err, address, family) => {
-  cosServiceUrl = 'http://' + address
-  console.log(config.AUTH_SERVICE_DNS, authServiceUrl)
+  axios.defaults.headers.post['Content-Type'] = 'application/json'
+  axios.defaults.baseURL = 'http://' + address
+  console.log(config.AUTH_SERVICE_DNS, axios.defaults.baseURL)
 
   // authenticate service
   axios.post(authServiceUrl + '/authenticate', {
@@ -30,7 +29,7 @@ dns.lookup(config.AUTH_SERVICE_DNS, (err, address, family) => {
     password: config.AUTH_SERVICE_ADMIN_PASSWORD
   })
     .then(res => {
-      authToken = res.body.token
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + res.body.token
       console.log('Service is authenticated. Token = ' + authToken)
     })
     .catch(err => {
@@ -47,7 +46,7 @@ objectStorage.initialize().then(() => {
 })
 
 // abstract away to its own Node module
-const isAdmin = req => {
+const isAdmin = (req, res, next) => {
   return new Promise((resolve, reject) => {
     const authHeader = req.header('Authorization')
 
@@ -60,11 +59,11 @@ const isAdmin = req => {
       ? authorizationHeaderSplitBySpace[1]
       : authorizationHeaderSplitBySpace[0]
 
-    axios.post(authServiceUrl + '/verify', {
+    axios.post('/verify', {
       token,
       isAdmin: true
-    }).then(() => resolve(true))
-      .catch(err => resolve(false))
+    }).then(() => next())
+      .catch(err => res.sendStatus(403))
   })
 }
 
