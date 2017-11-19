@@ -8,7 +8,7 @@ spec:
     metadata:
       labels:
         app: cos-service
-        tier: server
+        type: service
     spec:
       containers:
       - name: cos-service 
@@ -53,6 +53,21 @@ spec:
               configMapKeyRef:
                 name: jinni-cos-service
                 key: COS_PASSWORD
+          - name: AUTH_SERVICE_DNS
+            valueFrom:
+              configMapKeyRef:
+                name: jinni-cos-service
+                key: AUTH_SERVICE_DNS             
+          - name: AUTH_SERVICE_ADMIN_EMAIL
+            valueFrom:
+              configMapKeyRef:
+                name: jinni-cos-service
+                key: AUTH_SERVICE_ADMIN_EMAIL
+          - name: AUTH_SERVICE_ADMIN_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: jinni-cos-service
+                key: AUTH_SERVICE_ADMIN_PASSWORD            
 ---
 apiVersion: v1
 kind: Service
