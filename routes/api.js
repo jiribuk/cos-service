@@ -2,7 +2,8 @@ const express = require('express')
 const router = express.Router()
 const config = require('../config')
 const ObjectStorage = require('../lib/object-storage')
-const axios = rquire('axios')
+const axios = require('axios')
+const dns = require('dns')
 
 const storageConfig = {
   provider: 'openstack',
@@ -24,7 +25,7 @@ dns.lookup(config.AUTH_SERVICE_DNS, (err, address, family) => {
   console.log(config.AUTH_SERVICE_DNS, axios.defaults.baseURL)
 
   // authenticate service
-  axios.post(authServiceUrl + '/authenticate', {
+  axios.post('/authenticate', {
     email: config.AUTH_SERVICE_ADMIN_EMAIL,
     password: config.AUTH_SERVICE_ADMIN_PASSWORD
   })
