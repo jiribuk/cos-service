@@ -32,8 +32,8 @@ const authenticate = () => {
       password: config.AUTH_SERVICE_ADMIN_PASSWORD
     })
       .then(res => {
-        console.log(res)
-        axios.defaults.headers.common['Authorization'] = 'Bearer ' + res.body.token
+        const authToken = res.data.token
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + authToken
         console.log('Service is authenticated. Token = ' + authToken)
       })
       .catch(err => {
@@ -70,8 +70,14 @@ const isAdmin = (req, res, next) => {
     axios.post('/verify', {
       token,
       isAdmin: true
-    }).then(() => next())
-      .catch(err => res.sendStatus(403))
+    }).then(res => {
+      const verified = res.data.verified
+      if (verified) {
+        next()
+      } else {
+        res.sendStatus(403)
+      }
+    }).catch(err => res.sendStatus(403))
   })
 }
 
