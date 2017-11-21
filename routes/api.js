@@ -32,6 +32,7 @@ const authenticate = () => {
       password: config.AUTH_SERVICE_ADMIN_PASSWORD
     })
       .then(res => {
+        console.log(res)
         axios.defaults.headers.common['Authorization'] = 'Bearer ' + res.body.token
         console.log('Service is authenticated. Token = ' + authToken)
       })
