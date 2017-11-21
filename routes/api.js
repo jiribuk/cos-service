@@ -41,6 +41,7 @@ const authenticate = () => {
   })
 }
 
+authenticate()
 setInterval(authenticate, 3600 * 100)
 
 // Initialize Object Storage
