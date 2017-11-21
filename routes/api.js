@@ -19,24 +19,29 @@ const storageConfig = {
 }
 
 // Initialize Auth Service
-dns.lookup(config.AUTH_SERVICE_DNS, (err, address, family) => {
-  axios.defaults.headers.post['Content-Type'] = 'application/json'
-  axios.defaults.baseURL = 'http://' + address
-  console.log(config.AUTH_SERVICE_DNS, axios.defaults.baseURL)
+const authenticate = () => {
+  console.log('Authentication started')
+  dns.lookup(config.AUTH_SERVICE_DNS, (err, address, family) => {
+    axios.defaults.headers.post['Content-Type'] = 'application/json'
+    axios.defaults.baseURL = 'http://' + address
+    console.log(config.AUTH_SERVICE_DNS, axios.defaults.baseURL)
 
-  // authenticate service
-  axios.post('/authenticate', {
-    email: config.AUTH_SERVICE_ADMIN_EMAIL,
-    password: config.AUTH_SERVICE_ADMIN_PASSWORD
+    // authenticate service
+    axios.post('/authenticate', {
+      email: config.AUTH_SERVICE_ADMIN_EMAIL,
+      password: config.AUTH_SERVICE_ADMIN_PASSWORD
+    })
+      .then(res => {
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + res.body.token
+        console.log('Service is authenticated. Token = ' + authToken)
+      })
+      .catch(err => {
+        console.error(err)
+      })
   })
-    .then(res => {
-      axios.defaults.headers.common['Authorization'] = 'Bearer ' + res.body.token
-      console.log('Service is authenticated. Token = ' + authToken)
-    })
-    .catch(err => {
-      console.error(err)
-    })
-})
+}
+
+setInterval(authenticate, 3600 * 100)
 
 // Initialize Object Storage
 const objectStorage = new ObjectStorage(storageConfig, 'images')
