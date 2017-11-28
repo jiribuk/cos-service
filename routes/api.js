@@ -90,7 +90,9 @@ router.get('/:filename', (req, res) => {
 
 // Save object
 router.post('/', isAdmin, (req, res) => {
-  objectStorage.upload(req).then(file => {
+  const filename = req.query.filename
+  const contentType = req.headers['Content-Type']
+  objectStorage.upload(req, contentType, filename).then(file => {
     res.sendStatus(201)
   }).catch(err => {
     console.error('File Upload', err)
